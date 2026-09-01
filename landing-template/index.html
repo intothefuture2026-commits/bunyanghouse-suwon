@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>힐스테이트 수원파크포레 — 분양안내</title>
+  <meta name="description" content="힐스테이트 수원파크포레 분양 상담 안내 — 경기도 수원시 권선구 서둔동, 84㎡·113㎡, 지상 14층 10개 동. 방문예약·상담 문의 1844-1588." />
+  <meta name="robots" content="index, follow" />
+
+  <!-- 성능: 웹폰트 CDN 조기 연결 + 첫 화면 히어로 이미지 우선 로드 -->
+  <link rel="preconnect" href="https://framerusercontent.com" crossorigin />
+  <link rel="dns-prefetch" href="https://framerusercontent.com" />
+  <link rel="preload" as="image" href="images/hero/hero.jpg" fetchpriority="high" />
+
+  <!-- 공유 미리보기 (카톡·문자·SNS) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:site_name" content="힐스테이트 수원파크포레" />
+  <meta property="og:title" content="힐스테이트 수원파크포레 분양안내" />
+  <meta property="og:description" content="경기도 수원시 권선구 서둔동 · 84㎡/113㎡ · 방문예약 상담 1844-1588" />
+  <!-- ⚠️ 배포 도메인 확정 후 절대경로로 교체하세요 -->
+  <!-- <meta property="og:url" content="https://도메인/" /> -->
+  <!-- <meta property="og:image" content="https://도메인/images/hero/hero.jpg" /> -->
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════
+       1. 네비게이션 헤더
+  ══════════════════════════════ -->
+  <header class="nav-header" id="navHeader">
+    <div class="nav-inner container">
+      <a href="#" class="nav-logo" id="navLogo">LOGO</a>
+
+      <nav class="nav-menu" aria-label="주 메뉴">
+        <ul id="navList"></ul>
+      </nav>
+
+      <a class="nav-phone-btn" id="navPhoneBtn" href="tel:">
+        <span class="phone-label">문의</span>
+        <span id="navPhoneNum">1844-1588</span>
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- 모바일 드롭다운 -->
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <ul id="mobileNavList"></ul>
+      <div class="mobile-phone">
+        <a class="mobile-phone-link" id="mobilePhoneBtn" href="tel:">
+          <span aria-hidden="true">📞</span>
+          <span id="mobilePhoneNum"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ══════════════════════════════
+         2. 히어로
+    ══════════════════════════════ -->
+    <section class="hero" id="hero" aria-label="메인 히어로">
+
+      <!-- 슬라이더 트랙 (배경 이미지) -->
+      <div class="hero-slider-outer">
+        <div class="hero-slider-track" id="heroTrack">
+          <!-- JS가 채움 -->
+        </div>
+      </div>
+
+      <!-- 텍스트 콘텐츠 — 검색엔진·Google Ads가 읽는 실제 HTML 텍스트 -->
+      <div class="hero-body">
+        <div class="hero-content container">
+          <div class="hero-top">
+            <p class="hero-eyebrow">수원의 중심에서 누리는 특별한 주거가치</p>
+            <h1 class="hero-sitename"><span class="hero-sitename-accent">힐스테이트</span> 수원파크포레</h1>
+          </div>
+
+          <div class="hero-bottom">
+            <ul class="hero-benefits" aria-label="분양 혜택">
+              <li>즉시입주 가능</li>
+              <li>계약금 5%</li>
+              <li>잔금 일부 유예</li>
+              <li>확장비 무상</li>
+            </ul>
+
+            <h2 class="hero-headline">분양가·잔여세대·방문예약 안내</h2>
+            <p class="hero-desc">상담을 신청하시면 담당자가 확인 후 연락드립니다.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════
+         빠른 상담폼 (검색광고 랜딩 진입점)
+    ══════════════════════════════ -->
+    <section class="quickform" id="consult-form" aria-label="빠른 상담 문의">
+      <div class="container">
+        <div class="quickform-card">
+
+          <!-- 좌: 연락처 안내 -->
+          <div class="quickform-info">
+            <h2 class="quickform-heading" id="qfHeading">위의 내용 중 궁금한 점이 있으신가요?</h2>
+            <ul class="quickform-contacts">
+              <li>
+                <a class="qf-contact" id="qfCallLink" href="tel:18441588">
+                  <span class="qf-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                  </span>
+                  <span class="qf-contact-text">
+                    <strong id="qfCallLabel">빠른 전화문의</strong>
+                    <span class="qf-contact-phone" id="qfCallNum">1844-1588</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <span class="qf-contact">
+                  <span class="qf-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                  </span>
+                  <span class="qf-contact-text">
+                    <strong id="qfVisitLabel">방문예약 접수</strong>
+                    <span id="qfVisitDesc">우측의 양식 작성 후 제출</span>
+                  </span>
+                </span>
+              </li>
+              <li>
+                <span class="qf-contact">
+                  <span class="qf-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </span>
+                  <span class="qf-contact-text">
+                    <strong id="qfAddrLabel">사업지</strong>
+                    <span id="qfAddr">경기도 수원시 권선구 서둔동 213-10번지 일원</span>
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 우: 미니 폼 -->
+          <form class="quickform-form" id="quickForm" novalidate>
+            <input type="text" class="hp-field" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <div class="qf-field">
+              <label for="qfName"><span class="required">*</span> 성함</label>
+              <input class="qf-input" type="text" id="qfName" name="name"
+                     placeholder="홍길동" autocomplete="name" required />
+            </div>
+            <div class="qf-field">
+              <label for="qfPhone1"><span class="required">*</span> 연락처</label>
+              <div class="qf-phone">
+                <input class="qf-input" type="text" id="qfPhone1" maxlength="3"
+                       placeholder="010" inputmode="numeric" autocomplete="tel-area-code" required />
+                <span class="qf-phone-sep" aria-hidden="true">-</span>
+                <input class="qf-input" type="text" id="qfPhone2" maxlength="4"
+                       placeholder="1234" inputmode="numeric" required />
+                <span class="qf-phone-sep" aria-hidden="true">-</span>
+                <input class="qf-input" type="text" id="qfPhone3" maxlength="4"
+                       placeholder="5678" inputmode="numeric" required />
+              </div>
+            </div>
+            <div class="qf-agree-row">
+              <label class="qf-agree">
+                <input type="checkbox" id="qfAgree" />
+                <span>개인정보 수집 및 이용 동의</span>
+              </label>
+              <button type="button" class="qf-terms-btn" id="qfTermsToggle"
+                      aria-expanded="false" aria-controls="qfTermsBox">보기</button>
+            </div>
+            <div class="qf-terms-box" id="qfTermsBox" hidden>
+              <p>
+                <strong>수집 항목:</strong> 성명, 연락처<br />
+                <strong>수집 목적:</strong> 분양 상담 및 모델하우스 위치 안내<br />
+                <strong>보유 기간:</strong> 상담 종료 후 1년<br /><br />
+                동의를 거부하실 수 있으며, 거부 시 안내가 제한될 수 있습니다.<br />
+                자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인하세요.
+              </p>
+            </div>
+            <button type="submit" class="btn btn-primary qf-submit" id="qfSubmit">모델하우스 위치 안내 받기</button>
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로모션 배너 — 상품권 증정 EVENT (상담폼 다음으로 이동) -->
+    <div class="promo-band">
+      <div class="container">
+        <a class="promo-banner js-promo" data-promo="event" href="#quickForm">
+          <img src="images/promo/event.webp"
+               alt="본 홈페이지에서 방문예약 후 상담완료 시 선착순 10팀 상품권 증정 EVENT" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         3. 프리미엄 포인트
+    ══════════════════════════════ -->
+    <section class="premium" id="premium">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Premium Point</span>
+          <h2 class="section-title" id="premiumTitle">프리미엄 포인트</h2>
+        </div>
+        <div class="premium-grid" id="premiumGrid">
+          <!-- JS가 채움 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로모션 배너 — 방문예약 안내 -->
+    <div class="promo-band">
+      <div class="container">
+        <a class="promo-banner" href="#contact">
+          <img src="images/promo/visit-guide.webp"
+               alt="본 사이트에서 방문예약 시 1:1 담당자 배정 · 방문예약 대표번호 1844-1588" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         4. 단지 개요
+    ══════════════════════════════ -->
+    <section class="overview" id="overview">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Overview</span>
+          <h2 class="section-title">단지 개요</h2>
+        </div>
+        <div class="overview-card">
+          <div class="overview-img-wrap">
+            <img id="overviewImg" src="" alt="단지 투시도" class="overview-img" loading="lazy" decoding="async">
+            <p class="overview-img-caption" id="overviewCaption"></p>
+          </div>
+          <table class="overview-table">
+            <colgroup>
+              <col class="ov-col-label">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">구분</th>
+                <th scope="col">내용</th>
+              </tr>
+            </thead>
+            <tbody id="overviewTbody"><!-- JS가 채움 --></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         5. 위치 안내
+    ══════════════════════════════ -->
+    <section class="location" id="location">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Location</span>
+          <h2 class="section-title">위치 안내</h2>
+        </div>
+        <div class="location-layout">
+          <div class="location-map">
+            <img
+              src="images/location/location-map.png"
+              alt="위치 지도"
+              class="location-map-img"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
+          <div class="location-points" id="locationPoints">
+            <!-- JS가 채움 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로모션 배너 — 대표번호 전화 연결 -->
+    <div class="promo-band">
+      <div class="container">
+        <a class="promo-banner js-promo" data-promo="call" href="tel:18441588">
+          <img src="images/promo/top-banner1844-call-v2.webp"
+               alt="대표번호 1844-1588 · 모바일에서 터치 시 즉시 전화 연결" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         6. 갤러리
+    ══════════════════════════════ -->
+    <section class="gallery" id="gallery">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Gallery</span>
+          <h2 class="section-title">단지 갤러리</h2>
+        </div>
+        <div class="tab-bar" id="galleryTabBar" role="tablist" aria-label="갤러리 탭">
+          <!-- JS가 채움 -->
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- JS가 채움 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         7. 평면도
+    ══════════════════════════════ -->
+    <section class="floorplan" id="floorplan">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Floor Plan</span>
+          <h2 class="section-title">평면도</h2>
+        </div>
+        <div class="tab-bar light" id="floorplanTabBar" role="tablist" aria-label="평면도 타입 선택">
+          <!-- JS가 채움 -->
+        </div>
+        <div class="floorplan-content" id="floorplanContent">
+          <!-- JS가 채움 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로모션 배너 — 24시간 문자상담 -->
+    <div class="promo-band">
+      <div class="container">
+        <a class="promo-banner js-promo" data-promo="sms" href="sms:18441588">
+          <img src="images/promo/top-banner-muja.webp"
+               alt="24시간 문자상담 · 모바일에서 터치 시 문자상담으로 연결" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         8. FAQ
+    ══════════════════════════════ -->
+    <section class="faq" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">FAQ</span>
+          <h2 class="section-title">자주 묻는 질문</h2>
+        </div>
+        <div class="accordion" id="faqAccordion">
+          <!-- JS가 채움 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로모션 배너 — 상담 신청 전 최종 안내 (Q&A 다음) -->
+    <div class="promo-band promo-band--stack">
+      <div class="container">
+        <a class="promo-banner js-promo" data-promo="event" href="#contact">
+          <img src="images/promo/event.webp"
+               alt="방문예약 후 상담완료 시 선착순 10팀 상품권 증정 EVENT" loading="lazy">
+        </a>
+        <a class="promo-banner js-promo" data-promo="call" href="tel:18441588">
+          <img src="images/promo/top-banner1844-call-v2.webp"
+               alt="대표번호 1844-1588 · 모바일에서 터치 시 즉시 전화 연결" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         9. 상담 신청
+    ══════════════════════════════ -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Contact</span>
+          <h2 class="section-title">상담 신청</h2>
+          <p class="section-desc">전문 상담사가 빠르게 연락드립니다</p>
+        </div>
+
+        <form class="contact-form" id="contactForm" novalidate>
+
+          <input type="text" class="hp-field" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <!-- 성함 -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputName">성함 <span class="required" aria-label="필수">*</span></label>
+              <input type="text" id="inputName" name="name"
+                     placeholder="이름을 입력해주세요" autocomplete="name" required />
+            </div>
+          </div>
+
+          <!-- 연락처 3분할 -->
+          <div class="form-row phone-row">
+            <div class="form-group phone-part">
+              <label for="phone1">연락처 <span class="required" aria-label="필수">*</span></label>
+              <input type="text" id="phone1" name="phone1"
+                     maxlength="3" placeholder="010" inputmode="numeric" required />
+            </div>
+            <span class="phone-sep" aria-hidden="true">-</span>
+            <div class="form-group phone-part no-label">
+              <input type="text" id="phone2" name="phone2"
+                     maxlength="4" placeholder="0000" inputmode="numeric" required />
+            </div>
+            <span class="phone-sep" aria-hidden="true">-</span>
+            <div class="form-group phone-part no-label">
+              <input type="text" id="phone3" name="phone3"
+                     maxlength="4" placeholder="0000" inputmode="numeric" required />
+            </div>
+          </div>
+
+          <!-- 방문일 + 시간 -->
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="visitDate">방문 희망일</label>
+              <input type="date" id="visitDate" name="visitDate" />
+            </div>
+            <div class="form-group">
+              <label for="visitTime">방문 희망 시간</label>
+              <select id="visitTime" name="visitTime">
+                <option value="">시간 선택</option>
+                <option value="09-10">09:00 ~ 10:00</option>
+                <option value="10-11">10:00 ~ 11:00</option>
+                <option value="11-12">11:00 ~ 12:00</option>
+                <option value="13-14">13:00 ~ 14:00</option>
+                <option value="14-15">14:00 ~ 15:00</option>
+                <option value="15-16">15:00 ~ 16:00</option>
+                <option value="16-17">16:00 ~ 17:00</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 문의 내용 -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="message">문의 내용</label>
+              <textarea id="message" name="message" rows="3"
+                        placeholder="궁금하신 내용을 입력해주세요 (선택)"></textarea>
+            </div>
+          </div>
+
+          <!-- 약관 동의 -->
+          <div class="form-row terms-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="agreeAll" name="agreeAll" />
+              <span>개인정보 수집·이용에 동의합니다 <span class="required">(필수)</span></span>
+            </label>
+            <button type="button" class="terms-detail-btn" id="termsToggle"
+                    aria-expanded="false" aria-controls="termsBox">
+              내용 보기 ▾
+            </button>
+          </div>
+          <div class="terms-box" id="termsBox" hidden>
+            <p>
+              <strong>수집 항목:</strong> 성명, 연락처<br />
+              <strong>수집 목적:</strong> 분양 상담 및 안내<br />
+              <strong>보유 기간:</strong> 상담 종료 후 1년<br /><br />
+              귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있으며,
+              동의 거부 시 상담 신청이 제한될 수 있습니다.<br />
+              자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인하세요.
+            </p>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-submit">상담 신청하기</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════
+       10. 하단 고정 버튼바
+  ══════════════════════════════ -->
+  <!-- 모바일 전용: 버튼바 위 안내 배너 (버튼바와 함께 등장) -->
+  <div class="bottom-bar-notice" id="bottomBarNotice" aria-hidden="true"></div>
+  <div class="bottom-bar" id="bottomBar" role="complementary" aria-label="하단 빠른 메뉴">
+    <a class="bottom-bar-btn call" id="bottomCallBtn" href="tel:">
+      <span class="icon" aria-hidden="true">📞</span>
+      <span id="bottomCallLabel">전화 상담</span>
+    </a>
+    <a class="bottom-bar-btn kakao" id="bottomKakaoBtn" href="#contact">
+      <span class="icon" aria-hidden="true">💬</span>
+      <span id="bottomKakaoLabel">카카오 상담</span>
+    </a>
+    <a class="bottom-bar-btn visit" href="#quickForm">
+      <span class="icon" aria-hidden="true">📅</span>
+      <span id="bottomVisitLabel">방문 예약</span>
+    </a>
+  </div>
+
+  <!-- ══════════════════════════════
+       11. 플로팅 사이드 버튼
+  ══════════════════════════════ -->
+  <div class="floating-side" id="floatingSide" aria-label="플로팅 메뉴">
+    <a class="floating-btn call" id="floatCallBtn" href="tel:" aria-label="전화상담" data-tip="전화상담">
+      <span class="fb-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.2 2.2z"/></svg>
+      </span>
+    </a>
+    <a class="floating-btn kakao" href="#contact" aria-label="카카오톡 상담" data-tip="카카오톡 상담">
+      <span class="fb-ico" aria-hidden="true">
+        <svg viewBox="0 0 32 32">
+          <path fill="#3C1E1E" d="M16 5.4c-6.075 0-11 3.883-11 8.672 0 3.114 2.083 5.845 5.213 7.383-.23.858-.832 3.106-.952 3.588-.149.599.22.591.462.43.19-.126 3.02-2.05 4.248-2.882.664.098 1.346.15 2.029.15 6.075 0 11-3.883 11-8.672S22.075 5.4 16 5.4z"/>
+          <text x="16" y="16.3" text-anchor="middle" font-size="6.2" font-weight="700" fill="#FEE500" font-family="Arial, Helvetica, sans-serif">TALK</text>
+        </svg>
+      </span>
+    </a>
+    <a class="floating-btn top" href="#hero" aria-label="맨 위로" data-tip="맨 위로">
+      <span class="fb-ico fb-top" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 5l7 7-1.4 1.4L13 8.83V20h-2V8.83L6.4 13.4 5 12z"/></svg>
+        <span class="fb-top-label">TOP</span>
+      </span>
+    </a>
+  </div>
+
+  <!-- ══════════════════════════════
+       12. 푸터
+  ══════════════════════════════ -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <p class="footer-logo" id="footerLogoName"></p>
+        <p class="footer-info" id="footerInfo"></p>
+        <p class="footer-biz" id="footerBiz"></p>
+        <p class="footer-links">
+          <a id="footerPrivacyLink" href="privacy.html">개인정보처리방침</a>
+        </p>
+        <hr class="footer-hr" />
+        <p class="footer-disclaimer" id="footerDisclaimer"></p>
+        <p class="footer-copy" id="footerCopy"></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════
+       13. 혜택 안내 팝업
+  ══════════════════════════════ -->
+  <div class="popup-overlay hidden" id="popupOverlay" aria-hidden="true">
+    <div class="popup-box" role="dialog" aria-modal="true" aria-label="분양 안내">
+      <button class="popup-close" id="popupClose" aria-label="팝업 닫기">✕</button>
+      <a class="popup-img-link" id="popupLink" href="#quickForm">
+        <img id="popupImg" src="images/popup/popup.png" alt="힐스테이트 수원파크포레 분양 안내">
+      </a>
+      <div class="popup-actions">
+        <button type="button" class="popup-action" id="popupHideToday">오늘 하루 보지 않기</button>
+        <button type="button" class="popup-action popup-action--close" id="popupCloseBtn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# 이미지 백업 압축본 (배포 불필요, 용량 큼)
+*.zip
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 로컬 임시
+*.log
+scratchpad/
+
+# 실제 환경변수 (예시 파일만 커밋)
+.env
+backend/.env
