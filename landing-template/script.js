@@ -525,9 +525,12 @@ function initQuickForm() {
     setSubmitting(submitBtn, false, idleLabel);
 
     if (!result.ok) {
-      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도하시거나 1844-1588로 문의해주세요.');
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도하시거나 ' + CONFIG.phone + '로 문의해주세요.');
       return;
     }
+
+    // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
+    if (window.trackLeadSubmit) window.trackLeadSubmit();
 
     alert('신청이 완료되었습니다.\n모델하우스 위치 안내를 곧 보내드리겠습니다.');
     form.reset();
@@ -602,9 +605,12 @@ function initContactForm() {
     setSubmitting(submitBtn, false, idleLabel);
 
     if (!result.ok) {
-      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도하시거나 1844-1588로 문의해주세요.');
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도하시거나 ' + CONFIG.phone + '로 문의해주세요.');
       return;
     }
+
+    // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
+    if (window.trackLeadSubmit) window.trackLeadSubmit();
 
     alert(`상담 신청이 완료되었습니다.\n담당자가 ${p1}-${p2}-${p3}으로 빠르게 연락드리겠습니다.`);
     form.reset();

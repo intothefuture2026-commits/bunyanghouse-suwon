@@ -3,9 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) — Google Ads 전환추적 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18422804708"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-18422804708');
+  </script>
+
   <title>힐스테이트 수원파크포레 — 분양안내</title>
   <meta name="description" content="힐스테이트 수원파크포레 분양 상담 안내 — 경기도 수원시 권선구 서둔동, 84㎡·113㎡, 지상 14층 10개 동. 방문예약·상담 문의 1844-1588." />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://suwon.bunyanghouse.com/" />
 
   <!-- 성능: 웹폰트 CDN 조기 연결 + 첫 화면 히어로 이미지 우선 로드 -->
   <link rel="preconnect" href="https://framerusercontent.com" crossorigin />
@@ -18,9 +29,9 @@
   <meta property="og:site_name" content="힐스테이트 수원파크포레" />
   <meta property="og:title" content="힐스테이트 수원파크포레 분양안내" />
   <meta property="og:description" content="경기도 수원시 권선구 서둔동 · 84㎡/113㎡ · 방문예약 상담 1844-1588" />
-  <!-- ⚠️ 배포 도메인 확정 후 절대경로로 교체하세요 -->
-  <!-- <meta property="og:url" content="https://도메인/" /> -->
-  <!-- <meta property="og:image" content="https://도메인/images/hero/hero.jpg" /> -->
+  <meta property="og:url" content="https://suwon.bunyanghouse.com/" />
+  <meta property="og:image" content="https://suwon.bunyanghouse.com/images/hero/hero.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -552,5 +563,41 @@
 
   <script src="config.js"></script>
   <script src="script.js"></script>
+
+  <!-- ══════════════════════════════
+       Google Ads 전환 이벤트
+       · 상담신청 제출 → script.js 성공 처리부에서 window.trackLeadSubmit() 호출
+       · 클릭 투 콜   → tel: 링크 클릭 시 자동 발생 (추가 작업 없음)
+  ══════════════════════════════ -->
+  <script>
+  (function () {
+    var LEAD = 'AW-18422804708/RmywCOz6uewcEOTh1tBE'; // 상담신청 제출
+    var CALL = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
+
+    function send(label) {
+      if (typeof gtag !== 'function') return;
+      gtag('event', 'conversion', {
+        'send_to': label,
+        'value': 1.0,
+        'currency': 'KRW'
+      });
+    }
+
+    // 상담신청 제출 — 폼 전송이 성공했을 때만 호출하세요
+    window.trackLeadSubmit = function () { send(LEAD); };
+
+    // 클릭 투 콜 — tel: 링크 클릭 자동 추적 (3초 내 중복 무시)
+    var last = 0;
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
+      if (!a) return;
+      var now = Date.now();
+      if (now - last < 3000) return;
+      last = now;
+      send(CALL);
+    }, true);
+  })();
+  </script>
+
 </body>
 </html>
