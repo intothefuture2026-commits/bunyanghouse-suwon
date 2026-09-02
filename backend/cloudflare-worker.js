@@ -6,13 +6,15 @@
  *   1) https://dash.cloudflare.com → Workers & Pages → Create Worker
  *   2) 이 파일 내용을 붙여넣고 Deploy
  *   3) Settings → Variables and Secrets 에 아래 값 등록 (Secret 로)
- *        SOLAPI_API_KEY      : 솔라피 API Key
- *        SOLAPI_API_SECRET   : 솔라피 API Secret
- *        SENDER_NUMBER       : 솔라피에 사전등록한 발신번호 (하이픈 없이, 예 01012345678)
- *        ADMIN_NUMBER        : 신청 알림 받을 관리자 번호 (하이픈 없이, 콤마로 여러 명 가능)
- *        ALLOWED_ORIGIN      : 사이트 주소 (예 https://example.com)  ※ 여러 개면 콤마로
- *        DRY_RUN            : (선택) "1" 이면 실제 발송 안 하고 로그만 — 개발/테스트용
- *        NOTIFY_APPLICANT   : (선택) "0" 이면 신청자 자동회신 문자 끔 (기본: 보냄)
+ *        SOLAPI_API_KEY        : 솔라피 API Key
+ *        SOLAPI_API_SECRET     : 솔라피 API Secret
+ *        SOLAPI_SENDER_NUMBER  : 솔라피에 사전등록한 발신번호 (하이픈 없이, 예 01012345678)
+ *                                ※ 예전 이름 SENDER_NUMBER 도 계속 인식됨
+ *        ADMIN_NUMBER          : 신청 알림 받을 관리자 번호 (하이픈 없이, 콤마로 여러 명 가능)
+ *        ALLOWED_ORIGIN        : 사이트 주소 (예 https://example.com)  ※ 여러 개면 콤마로. 미설정 시 모든 Origin 허용
+ *        SITE_NAME            : (선택) 문자 제목에 쓸 사업명 (기본: "힐스테이트 수원파크포레")
+ *        DRY_RUN             : (선택) "1" 이면 실제 발송 안 하고 로그만 — 개발/테스트용
+ *        NOTIFY_APPLICANT    : (선택) "0" 이면 신청자 자동회신 문자 끔 (기본: 보냄)
  *   4) 배포된 주소(https://xxxx.workers.dev)를 config.js 의 api.leadEndpoint 에 입력
  *
  * KV 네임스페이스 "RL" 을 바인딩하면 rate limit + 중복발송 방지가 활성화됩니다 (선택, 권장).
@@ -22,7 +24,10 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const allow  = (env.ALLOWED_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
-    const corsOrigin = allow.includes(origin) ? origin : (allow[0] || '');
+    // ALLOWED_ORIGIN 미설정 시: 요청 Origin 그대로 허용(느슨). 설정 시: 목록에 있을 때만.
+    const corsOrigin = allow.length
+      ? (allow.includes(origin) ? origin : allow[0])
+      : (origin || '*');
 
     const cors = {
       'Access-Control-Allow-Origin': corsOrigin,
@@ -78,17 +83,26 @@ export default {
       await env.RL.put(dedupKey, '1', { expirationTtl: 300 }); // 5분
     }
 
+    // ── 발신번호 (대시보드 변수명 SOLAPI_SENDER_NUMBER / SENDER_NUMBER 둘 다 허용) ──
+    const sender = String(env.SOLAPI_SENDER_NUMBER || env.SENDER_NUMBER || '').replace(/\D/g, '');
+    if (!sender) {
+      log('발신번호 미설정 — SOLAPI_SENDER_NUMBER 확인 필요', { source, phone });
+      if (env.RL) { try { await env.RL.delete(`dedup:${source}:${phone}`); } catch {} }
+      return json({ ok: false, error: 'config' }, 500, cors);
+    }
+
     // ── 문자 내용 구성 ─────────────────────────
+    const SITE  = env.SITE_NAME || '힐스테이트 수원파크포레';
     const visit = [data.visitDate, data.visitTime].filter(Boolean).join(' ');
     const adminText =
-      `[힐스테이트 수원파크포레 상담신청]\n` +
+      `[${SITE} 상담신청]\n` +
       `성함: ${name}\n연락처: ${phone}` +
       (visit ? `\n방문희망: ${visit}` : '') +
       (data.message ? `\n문의: ${String(data.message).slice(0, 200)}` : '') +
       (data.source ? `\n(${source})` : '');
 
     const userText =
-      `[힐스테이트 수원파크포레]\n상담 신청이 접수되었습니다. 담당자가 곧 연락드리겠습니다.\n문의 1844-1588`;
+      `[${SITE}]\n상담 신청이 접수되었습니다. 담당자가 곧 연락드리겠습니다.\n문의 1844-1588`;
 
     const admins = (env.ADMIN_NUMBER || '').split(',').map(s => s.replace(/\D/g, '')).filter(Boolean);
     const notifyApplicant = env.NOTIFY_APPLICANT !== '0' && env.NOTIFY_APPLICANT !== 'false';
@@ -102,10 +116,12 @@ export default {
     // ── 솔라피 발송 ────────────────────────────
     try {
       for (const admin of admins) {
-        await solapiSend(env, { to: admin, from: env.SENDER_NUMBER, text: adminText });
+        const r = await solapiSend(env, { to: admin, from: sender, text: adminText });
+        log('솔라피 접수(관리자)', { source, phone, type: r.type, code: r.statusCode });
       }
       if (notifyApplicant) {
-        await solapiSend(env, { to: phone, from: env.SENDER_NUMBER, text: userText });
+        const r = await solapiSend(env, { to: phone, from: sender, text: userText });
+        log('솔라피 접수(신청자)', { source, phone, type: r.type, code: r.statusCode });
       }
     } catch (e) {
       // 실패 로그 (개인정보/시크릿 노출 없이). 클라이언트에는 상세 미노출.
@@ -140,20 +156,22 @@ function maskPhone(p) {
   return d.slice(0, 3) + '****' + d.slice(-4);
 }
 
-/* 솔라피 에러에서 상태코드/코드만 추출 — 응답 본문에 개인정보가 섞일 수 있어 통째 로깅 안 함 */
+/* 솔라피 에러에서 상태코드/요지만 추출 — 응답 본문에 개인정보가 섞일 수 있어 통째 로깅 안 함 */
 function sanitizeErr(e) {
   const s = String(e && e.message || e);
-  const m = s.match(/solapi (\d{3})/);
-  return m ? `solapi ${m[1]}` : s.slice(0, 80);
+  const m = s.match(/solapi[^]*/i);
+  return (m ? m[0] : s).slice(0, 150);
 }
 
-/* 솔라피 단건 발송 (REST v4, HMAC-SHA256 서명) */
+/* 솔라피 단건 발송 (REST v4, HMAC-SHA256 서명)
+   ⚠️ 솔라피는 접수 실패 시에도 HTTP 200 + 본문에 실패코드를 담아 보낼 수 있어,
+   HTTP 상태만이 아니라 본문의 statusCode('2'로 시작해야 정상 접수)까지 확인한다. */
 async function solapiSend(env, message) {
   const date = new Date().toISOString();
   const salt = crypto.randomUUID().replace(/-/g, '');
   const sig  = await hmacSha256Hex(env.SOLAPI_API_SECRET, date + salt);
 
-  const res = await fetch('https://api.solapi.com/messages/v4/send', {
+  const res  = await fetch('https://api.solapi.com/messages/v4/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -162,8 +180,23 @@ async function solapiSend(env, message) {
     body: JSON.stringify({ message }),
   });
 
-  if (!res.ok) throw new Error(`solapi ${res.status} ${await res.text()}`);
-  return res.json();
+  const raw = await res.text();
+  let body; try { body = JSON.parse(raw); } catch { body = null; }
+
+  if (!res.ok) {
+    const code = body && (body.errorCode || body.statusCode);
+    const msg  = body && (body.errorMessage || body.statusMessage);
+    throw new Error(`solapi ${res.status} ${code || ''} ${msg || raw.slice(0, 120)}`);
+  }
+
+  // HTTP 200 이어도 접수 실패가 본문에 담겨 옴 — 정상 접수 코드(2xxx)만 통과
+  const code = body && (body.statusCode || body.errorCode);
+  if (!(typeof code === 'string' && code[0] === '2')) {
+    const msg = body && (body.statusMessage || body.errorMessage);
+    throw new Error(`solapi reject ${code || '?'} ${msg || raw.slice(0, 120)}`);
+  }
+
+  return body;
 }
 
 async function hmacSha256Hex(secret, data) {

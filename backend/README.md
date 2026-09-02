@@ -32,9 +32,10 @@ API Key/Secret이 브라우저에 노출되면 누구나 님 계정으로 문자
    |---|---|---|
    | `SOLAPI_API_KEY` | 솔라피 API Key | ✅ |
    | `SOLAPI_API_SECRET` | 솔라피 API Secret | ✅ |
-   | `SENDER_NUMBER` | 등록한 발신번호 (하이픈 없이) | ✅ |
+   | `SOLAPI_SENDER_NUMBER` | 등록한 발신번호 (하이픈 없이) ※ 예전 이름 `SENDER_NUMBER` 도 인식 | ✅ |
    | `ADMIN_NUMBER` | 신청 알림 받을 번호 (하이픈 없이, 콤마로 여러 명) | ✅ |
-   | `ALLOWED_ORIGIN` | 사이트 주소 (예 `https://example.com`, 콤마로 여러 개) | ✅ |
+   | `ALLOWED_ORIGIN` | 사이트 주소 (예 `https://example.com`, 콤마로 여러 개). 미설정 시 모든 Origin 허용 | 권장 |
+   | `SITE_NAME` | 문자 제목에 쓸 사업명 (기본 `힐스테이트 수원파크포레`) | 선택 |
    | `DRY_RUN` | `1` 이면 실제 발송 없이 로그만 (개발/테스트용) | 선택 |
    | `NOTIFY_APPLICANT` | `0` 이면 신청자 자동회신 문자 끔 (기본: 보냄) | 선택 |
 4. (권장) **Settings → Bindings → KV Namespace** 추가:
