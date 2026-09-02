@@ -37,11 +37,16 @@ function applyConfig() {
   setHref('bottomCallBtn', telHref);
   setHref('floatCallBtn', telHref);
 
-  // 프로모션 배너 링크 (전화 / 문자)
+  // 프로모션 배너 링크 (전화 / 문자 / 카카오톡)
   const smsHref = 'sms:' + phone.replace(/-/g, '');
   qsa('.js-promo').forEach(a => {
     if (a.dataset.promo === 'call')      a.href = telHref;
     else if (a.dataset.promo === 'sms')  a.href = smsHref;
+    else if (a.dataset.promo === 'kakao' && C.kakaoUrl) {
+      a.href = C.kakaoUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    }
   });
 
   // 빠른 문의 카드

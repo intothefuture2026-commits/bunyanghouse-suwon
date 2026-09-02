@@ -1525,10 +1525,10 @@ section { padding: 88px 0; }
 }
 
 /* 미디어쿼리 밖: 다른 페이지에서도 재사용 가능
-   패턴 주기(176px)만큼 이동 → 한 띠가 왼쪽으로 빠지는 순간 다음 띠가 오른쪽에서 진입, 이음매 없음 */
+   패턴 주기(176px)만큼 이동 → 한 띠가 오른쪽으로 빠지는 순간 다음 띠가 왼쪽에서 진입, 이음매 없음 */
 @keyframes hlSweep {
-  from { background-position: 176px 0; }
-  to   { background-position: 0 0; }
+  from { background-position: 0 0; }
+  to   { background-position: 176px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

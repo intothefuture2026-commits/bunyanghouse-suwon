@@ -146,9 +146,9 @@ const CONFIG = {
      갤러리 탭
   ───────────────────────────── */
   galleryTabs: [
-    { id: "interior",  label: "내부"    },
-    { id: "community", label: "커뮤니티" },
     { id: "view",      label: "단지배치도" },
+    { id: "community", label: "커뮤니티" },
+    { id: "interior",  label: "단지내부" },
   ],
 
   /* ─────────────────────────────
@@ -176,6 +176,21 @@ const CONFIG = {
   ───────────────────────────── */
   floorplanTabs: [
     {
+      id:    "type113",
+      label: "113㎡",
+      status: "마감임박",
+      info: {
+        subtitle:  "113㎡ — 대형 평형 프리미엄 설계",
+        highlight: "넓은 거실과 안방 드레스룸, 팬트리 등 수납 특화 설계!",
+        details: [
+          "전용면적 113㎡ (약 34평형)",
+          "4Bay 판상형 + 알파룸",
+        ],
+        priceBig: "",
+        footnote: "",
+      },
+    },
+    {
       id:    "type84a",
       label: "84㎡ A",
       status: "마감",
@@ -200,21 +215,6 @@ const CONFIG = {
         details: [
           "전용면적 84㎡ (약 25평형)",
           "3Bay + 알파룸 구조",
-        ],
-        priceBig: "",
-        footnote: "",
-      },
-    },
-    {
-      id:    "type113",
-      label: "113㎡",
-      status: "마감임박",
-      info: {
-        subtitle:  "113㎡ — 대형 평형 프리미엄 설계",
-        highlight: "넓은 거실과 안방 드레스룸, 팬트리 등 수납 특화 설계!",
-        details: [
-          "전용면적 113㎡ (약 34평형)",
-          "4Bay 판상형 + 알파룸",
         ],
         priceBig: "",
         footnote: "",

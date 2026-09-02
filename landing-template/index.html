@@ -298,7 +298,7 @@
     <div class="promo-band">
       <div class="container">
         <a class="promo-banner js-promo" data-promo="call" href="tel:18441588">
-          <img src="images/promo/top-banner1844-call-v2.webp"
+          <img src="images/promo/kakao.webp"
                alt="대표번호 1844-1588 · 모바일에서 터치 시 즉시 전화 연결" loading="lazy">
         </a>
       </div>
@@ -340,12 +340,13 @@
       </div>
     </section>
 
-    <!-- 프로모션 배너 — 24시간 문자상담 -->
+    <!-- 프로모션 배너 — 24시간 카카오톡 상담 -->
     <div class="promo-band">
       <div class="container">
-        <a class="promo-banner js-promo" data-promo="sms" href="sms:18441588">
+        <a class="promo-banner js-promo" data-promo="kakao" href="https://pf.kakao.com/_xlhxdfX/chat"
+           target="_blank" rel="noopener noreferrer">
           <img src="images/promo/top-banner-muja.webp"
-               alt="24시간 문자상담 · 모바일에서 터치 시 문자상담으로 연결" loading="lazy">
+               alt="24시간 카카오톡 상담 · 모바일에서 터치 시 카카오톡 상담으로 연결" loading="lazy">
         </a>
       </div>
     </div>
@@ -567,12 +568,14 @@
   <!-- ══════════════════════════════
        Google Ads 전환 이벤트
        · 상담신청 제출 → script.js 성공 처리부에서 window.trackLeadSubmit() 호출
-       · 클릭 투 콜   → tel: 링크 클릭 시 자동 발생 (추가 작업 없음)
+       · 클릭 투 콜   → tel: 링크 클릭 시 자동 발생
+       · 카카오 상담  → 카카오 상담 클릭 이벤트 발생 (전환 ID 설정 시 Ads 전환도 발생)
   ══════════════════════════════ -->
   <script>
   (function () {
     var LEAD = 'AW-18422804708/RmywCOz6uewcEOTh1tBE'; // 상담신청 제출
     var CALL = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
+    var KAKAO = ''; // Google Ads에서 '카카오 상담 클릭' 전환을 만든 뒤 send_to 값으로 교체
 
     function send(label) {
       if (typeof gtag !== 'function') return;
@@ -595,6 +598,14 @@
       if (now - last < 3000) return;
       last = now;
       send(CALL);
+    }, true);
+
+    // 카카오 상담 클릭은 우선 이벤트로 기록합니다. 전환 ID가 준비되면 Ads 전환도 함께 전송합니다.
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[data-promo="kakao"], .floating-btn.kakao, .bottom-bar-btn.kakao') : null;
+      if (!a || typeof gtag !== 'function') return;
+      gtag('event', 'kakao_consult_click', { 'event_category': 'consultation' });
+      if (KAKAO) send(KAKAO);
     }, true);
   })();
   </script>
