@@ -576,6 +576,7 @@
     var LEAD  = 'AW-18422804708/RmywCOz6uewcEOTh1tBE'; // 상담신청 제출
     var CALL  = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
     var KAKAO = 'AW-18422804708/9k6OCITrjO0cEOTh1tBE'; // 카카오 상담 클릭
+    var LOG_URL = 'https://script.google.com/macros/s/AKfycbxWO82ShlWmE2T_6mpgQ6R_9IePF_kI_a8Jz0Era2mswmXWuoSitwWARCWwHiBKdh_X/exec'; // 클릭/상담 로그 시트
 
     function send(label) {
       if (typeof gtag !== 'function') return;
@@ -587,8 +588,52 @@
       });
     }
 
-    // 상담신청 제출 — 폼 전송이 성공했을 때만 호출하세요
-    window.trackLeadSubmit = function () { send(LEAD); };
+    // ── 구글 광고 클릭 표식(gclid) 캡처 — 90일 보관 ──
+    (function captureGclid() {
+      try {
+        var params = new URLSearchParams(location.search);
+        var gclid = params.get('gclid');
+        if (gclid) {
+          localStorage.setItem('hs_gclid', gclid);
+          localStorage.setItem('hs_gclid_ts', String(Date.now()));
+        }
+      } catch (err) {}
+    })();
+
+    function getGclid() {
+      try {
+        var gclid = localStorage.getItem('hs_gclid');
+        var ts    = localStorage.getItem('hs_gclid_ts');
+        if (!gclid || !ts) return '';
+        var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+        if (Date.now() - Number(ts) > NINETY_DAYS) return '';
+        return gclid;
+      } catch (err) { return ''; }
+    }
+
+    // ── 폼 제출 / 전화·카카오 클릭을 구글 시트에 기록 (실제 상담 여부 확인용) ──
+    function gaLog(type, extra) {
+      try {
+        var payload = { type: type, gclid: getGclid(), page: location.pathname };
+        if (extra) {
+          if (extra.name)  payload.name  = extra.name;
+          if (extra.phone) payload.phone = extra.phone;
+        }
+        fetch(LOG_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // CORS 프리플라이트 회피
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(function () {});
+      } catch (err) {}
+    }
+    window.gaLog = gaLog;
+
+    // 상담신청 제출 — 폼 전송이 성공했을 때만 호출하세요 (info: {name, phone})
+    window.trackLeadSubmit = function (info) {
+      send(LEAD);
+      gaLog('form', info);
+    };
 
     // 클릭 자동 추적 (종류별로 3초 내 중복 무시)
     var last = { call: 0, kakao: 0 };
@@ -605,13 +650,13 @@
 
       // 전화: tel: 링크
       if (t.closest('a[href^="tel:"]')) {
-        if (throttled('call')) send(CALL);
+        if (throttled('call')) { send(CALL); gaLog('call'); }
         return;
       }
 
       // 카카오: 배너 / 플로팅 TALK / 하단바 / 팝업 등 pf.kakao.com 링크 전부
       if (t.closest('a[href*="pf.kakao.com"]')) {
-        if (throttled('kakao')) send(KAKAO);
+        if (throttled('kakao')) { send(KAKAO); gaLog('kakao'); }
       }
     }, true);
   })();

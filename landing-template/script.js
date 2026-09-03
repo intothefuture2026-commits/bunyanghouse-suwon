@@ -37,15 +37,15 @@ function applyConfig() {
   setHref('bottomCallBtn', telHref);
   setHref('floatCallBtn', telHref);
 
-  // 프로모션 배너 링크 (전화 / 문자 / 카카오톡)
+  // 프로모션 배너 링크 (전화 / 문자 / 카카오)
   const smsHref = 'sms:' + phone.replace(/-/g, '');
   qsa('.js-promo').forEach(a => {
-    if (a.dataset.promo === 'call')      a.href = telHref;
-    else if (a.dataset.promo === 'sms')  a.href = smsHref;
+    if (a.dataset.promo === 'call')       a.href = telHref;
+    else if (a.dataset.promo === 'sms')   a.href = smsHref;
     else if (a.dataset.promo === 'kakao' && C.kakaoUrl) {
-      a.href = C.kakaoUrl;
+      a.href   = C.kakaoUrl;
       a.target = '_blank';
-      a.rel = 'noopener noreferrer';
+      a.rel    = 'noopener noreferrer';
     }
   });
 
@@ -535,7 +535,7 @@ function initQuickForm() {
     }
 
     // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
-    if (window.trackLeadSubmit) window.trackLeadSubmit();
+    if (window.trackLeadSubmit) window.trackLeadSubmit({ name: name.value.trim(), phone: digits });
 
     alert('신청이 완료되었습니다.\n모델하우스 위치 안내를 곧 보내드리겠습니다.');
     form.reset();
@@ -615,7 +615,7 @@ function initContactForm() {
     }
 
     // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
-    if (window.trackLeadSubmit) window.trackLeadSubmit();
+    if (window.trackLeadSubmit) window.trackLeadSubmit({ name: name, phone: p1 + p2 + p3 });
 
     alert(`상담 신청이 완료되었습니다.\n담당자가 ${p1}-${p2}-${p3}으로 빠르게 연락드리겠습니다.`);
     form.reset();
