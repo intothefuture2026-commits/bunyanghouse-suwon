@@ -298,7 +298,7 @@
     <div class="promo-band">
       <div class="container">
         <a class="promo-banner js-promo" data-promo="call" href="tel:18441588">
-          <img src="images/promo/kakao.webp"
+          <img src="images/promo/top-banner1844-call-v2.webp"
                alt="대표번호 1844-1588 · 모바일에서 터치 시 즉시 전화 연결" loading="lazy">
         </a>
       </div>
@@ -343,10 +343,10 @@
     <!-- 프로모션 배너 — 24시간 카카오톡 상담 -->
     <div class="promo-band">
       <div class="container">
-        <a class="promo-banner js-promo" data-promo="kakao" href="https://pf.kakao.com/_xlhxdfX/chat"
-           target="_blank" rel="noopener noreferrer">
+        <a class="promo-banner js-promo" data-promo="kakao"
+           href="https://pf.kakao.com/_xlhxdfX/chat" target="_blank" rel="noopener noreferrer">
           <img src="images/promo/top-banner-muja.webp"
-               alt="24시간 카카오톡 상담 · 모바일에서 터치 시 카카오톡 상담으로 연결" loading="lazy">
+               alt="24시간 카카오톡 상담 · 터치 시 카카오톡 상담으로 연결" loading="lazy">
         </a>
       </div>
     </div>
@@ -567,18 +567,19 @@
 
   <!-- ══════════════════════════════
        Google Ads 전환 이벤트
-       · 상담신청 제출 → script.js 성공 처리부에서 window.trackLeadSubmit() 호출
-       · 클릭 투 콜   → tel: 링크 클릭 시 자동 발생
-       · 카카오 상담  → 카카오 상담 클릭 이벤트 발생 (전환 ID 설정 시 Ads 전환도 발생)
+       · 상담신청 제출  → script.js 성공 처리부에서 window.trackLeadSubmit() 호출
+       · 클릭 투 콜     → tel: 링크 클릭 시 자동 발생
+       · 카카오 상담 클릭 → pf.kakao.com 링크 클릭 시 자동 발생
   ══════════════════════════════ -->
   <script>
   (function () {
-    var LEAD = 'AW-18422804708/RmywCOz6uewcEOTh1tBE'; // 상담신청 제출
-    var CALL = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
-    var KAKAO = ''; // Google Ads에서 '카카오 상담 클릭' 전환을 만든 뒤 send_to 값으로 교체
+    var LEAD  = 'AW-18422804708/RmywCOz6uewcEOTh1tBE'; // 상담신청 제출
+    var CALL  = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
+    var KAKAO = 'AW-18422804708/9k6OCITrjO0cEOTh1tBE'; // 카카오 상담 클릭
 
     function send(label) {
       if (typeof gtag !== 'function') return;
+      if (!label || label.indexOf('PASTE_') !== -1) return; // 라벨 미설정 시 발사 안 함
       gtag('event', 'conversion', {
         'send_to': label,
         'value': 1.0,
@@ -589,23 +590,29 @@
     // 상담신청 제출 — 폼 전송이 성공했을 때만 호출하세요
     window.trackLeadSubmit = function () { send(LEAD); };
 
-    // 클릭 투 콜 — tel: 링크 클릭 자동 추적 (3초 내 중복 무시)
-    var last = 0;
-    document.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
-      if (!a) return;
+    // 클릭 자동 추적 (종류별로 3초 내 중복 무시)
+    var last = { call: 0, kakao: 0 };
+    function throttled(key) {
       var now = Date.now();
-      if (now - last < 3000) return;
-      last = now;
-      send(CALL);
-    }, true);
+      if (now - last[key] < 3000) return false;
+      last[key] = now;
+      return true;
+    }
 
-    // 카카오 상담 클릭은 우선 이벤트로 기록합니다. 전환 ID가 준비되면 Ads 전환도 함께 전송합니다.
     document.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[data-promo="kakao"], .floating-btn.kakao, .bottom-bar-btn.kakao') : null;
-      if (!a || typeof gtag !== 'function') return;
-      gtag('event', 'kakao_consult_click', { 'event_category': 'consultation' });
-      if (KAKAO) send(KAKAO);
+      var t = e.target;
+      if (!t || !t.closest) return;
+
+      // 전화: tel: 링크
+      if (t.closest('a[href^="tel:"]')) {
+        if (throttled('call')) send(CALL);
+        return;
+      }
+
+      // 카카오: 배너 / 플로팅 TALK / 하단바 / 팝업 등 pf.kakao.com 링크 전부
+      if (t.closest('a[href*="pf.kakao.com"]')) {
+        if (throttled('kakao')) send(KAKAO);
+      }
     }, true);
   })();
   </script>
