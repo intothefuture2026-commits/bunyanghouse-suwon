@@ -535,7 +535,11 @@ function initQuickForm() {
     }
 
     // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
-    if (window.trackLeadSubmit) window.trackLeadSubmit({ name: name.value.trim(), phone: digits });
+    if (window.trackLeadSubmit) window.trackLeadSubmit({
+      source: 'quickForm',
+      name: name.value.trim(),
+      phone: digits,
+    });
 
     alert('신청이 완료되었습니다.\n모델하우스 위치 안내를 곧 보내드리겠습니다.');
     form.reset();
@@ -615,7 +619,11 @@ function initContactForm() {
     }
 
     // ▼ Google Ads 전환 — '상담신청 제출' (전송 성공 시에만)
-    if (window.trackLeadSubmit) window.trackLeadSubmit({ name: name, phone: p1 + p2 + p3 });
+    if (window.trackLeadSubmit) window.trackLeadSubmit({
+      source: 'contactForm',
+      name: name,
+      phone: p1 + p2 + p3,
+    });
 
     alert(`상담 신청이 완료되었습니다.\n담당자가 ${p1}-${p2}-${p3}으로 빠르게 연락드리겠습니다.`);
     form.reset();

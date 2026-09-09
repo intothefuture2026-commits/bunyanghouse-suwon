@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suwon.bunyanghouse.com/sitemap.xml

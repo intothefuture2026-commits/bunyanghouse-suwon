@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WQ64J2LF');</script>
+  <!-- End Google Tag Manager -->
+
   <!-- Google tag (gtag.js) — Google Ads 전환추적 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18422804708"></script>
   <script>
@@ -36,6 +44,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WQ64J2LF"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- ══════════════════════════════
        1. 네비게이션 헤더
@@ -588,6 +601,16 @@
       });
     }
 
+    // GTM에서 GA4 이벤트 태그를 실행하기 위한 신호 (개인정보는 보내지 않음)
+    function pushAnalyticsEvent(eventName, params) {
+      window.dataLayer = window.dataLayer || [];
+      var eventData = { event: eventName };
+      if (params) {
+        Object.keys(params).forEach(function (key) { eventData[key] = params[key]; });
+      }
+      window.dataLayer.push(eventData);
+    }
+
     // ── 구글 광고 클릭 표식(gclid) 캡처 — 90일 보관 ──
     (function captureGclid() {
       try {
@@ -611,10 +634,16 @@
       } catch (err) { return ''; }
     }
 
+    function getCampaign() {
+      try {
+        return new URLSearchParams(location.search).get('utm_source') || '';
+      } catch (err) { return ''; }
+    }
+
     // ── 폼 제출 / 전화·카카오 클릭을 구글 시트에 기록 (실제 상담 여부 확인용) ──
     function gaLog(type, extra) {
       try {
-        var payload = { type: type, gclid: getGclid(), page: location.pathname };
+        var payload = { type: type, gclid: getGclid(), campaign: getCampaign(), page: location.pathname };
         if (extra) {
           if (extra.name)  payload.name  = extra.name;
           if (extra.phone) payload.phone = extra.phone;
@@ -633,6 +662,9 @@
     window.trackLeadSubmit = function (info) {
       send(LEAD);
       gaLog('form', info);
+      pushAnalyticsEvent('generate_lead', {
+        form_name: (info && info.source) || 'consultation'
+      });
     };
 
     // 클릭 자동 추적 (종류별로 3초 내 중복 무시)
@@ -650,13 +682,21 @@
 
       // 전화: tel: 링크
       if (t.closest('a[href^="tel:"]')) {
-        if (throttled('call')) { send(CALL); gaLog('call'); }
+        if (throttled('call')) {
+          send(CALL);
+          gaLog('call');
+          pushAnalyticsEvent('phone_click');
+        }
         return;
       }
 
       // 카카오: 배너 / 플로팅 TALK / 하단바 / 팝업 등 pf.kakao.com 링크 전부
       if (t.closest('a[href*="pf.kakao.com"]')) {
-        if (throttled('kakao')) { send(KAKAO); gaLog('kakao'); }
+        if (throttled('kakao')) {
+          send(KAKAO);
+          gaLog('kakao');
+          pushAnalyticsEvent('kakao_click');
+        }
       }
     }, true);
   })();
