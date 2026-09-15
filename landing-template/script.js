@@ -459,6 +459,11 @@ function initFAQ() {
    - 성공: 서버가 2xx 응답
 ────────────────────────────────────────── */
 async function submitLead(payload) {
+  // 실서버에서 ?ads_test=1로 점검할 때 문자·리드 전송도 함께 막습니다.
+  if (window.isAdsTestMode && window.isAdsTestMode()) {
+    return { ok: true, skipped: true, test: true };
+  }
+
   const endpoint = (CONFIG.api && CONFIG.api.leadEndpoint || '').trim();
   if (!endpoint) return { ok: true, skipped: true };
 

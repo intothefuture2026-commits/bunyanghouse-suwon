@@ -591,18 +591,39 @@
     var KAKAO = 'AW-18422804708/9k6OCITrjO0cEOTh1tBE'; // 카카오 상담 클릭
     var LOG_URL = 'https://script.google.com/macros/s/AKfycbxWO82ShlWmE2T_6mpgQ6R_9IePF_kI_a8Jz0Era2mswmXWuoSitwWARCWwHiBKdh_X/exec'; // 클릭/상담 로그 시트
 
-    function send(label) {
+    // URL에 ?ads_test=1을 붙이면 실제 Google Ads 전환은 보내지 않습니다.
+    // 운영 중 점검은 이 주소로 열어 테스트 전환이 실적에 섞이지 않게 합니다.
+    function isAdsTestMode() {
+      try {
+        return new URLSearchParams(location.search).get('ads_test') === '1';
+      } catch (err) { return false; }
+    }
+    window.isAdsTestMode = isAdsTestMode;
+
+    // 전환마다 고유번호를 붙여 중복 집계를 줄이고, 향후 개별 전환 조정에 사용합니다.
+    function createTransactionId(type) {
+      var randomId = (window.crypto && typeof window.crypto.randomUUID === 'function')
+        ? window.crypto.randomUUID()
+        : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+      return 'hs-' + type + '-' + randomId;
+    }
+
+    function send(label, transactionId) {
       if (typeof gtag !== 'function') return;
       if (!label || label.indexOf('PASTE_') !== -1) return; // 라벨 미설정 시 발사 안 함
-      gtag('event', 'conversion', {
+      if (isAdsTestMode()) return;
+      var eventData = {
         'send_to': label,
         'value': 1.0,
         'currency': 'KRW'
-      });
+      };
+      if (transactionId) eventData.transaction_id = transactionId;
+      gtag('event', 'conversion', eventData);
     }
 
     // GTM에서 GA4 이벤트 태그를 실행하기 위한 신호 (개인정보는 보내지 않음)
     function pushAnalyticsEvent(eventName, params) {
+      if (isAdsTestMode()) return;
       window.dataLayer = window.dataLayer || [];
       var eventData = { event: eventName };
       if (params) {
@@ -643,10 +664,16 @@
     // ── 폼 제출 / 전화·카카오 클릭을 구글 시트에 기록 (실제 상담 여부 확인용) ──
     function gaLog(type, extra) {
       try {
-        var payload = { type: type, gclid: getGclid(), campaign: getCampaign(), page: location.pathname };
+        var payload = {
+          type: isAdsTestMode() ? 'test-' + type : type,
+          gclid: getGclid(),
+          campaign: getCampaign(),
+          page: location.pathname
+        };
         if (extra) {
           if (extra.name)  payload.name  = extra.name;
           if (extra.phone) payload.phone = extra.phone;
+          if (extra.transactionId) payload.transaction_id = extra.transactionId;
         }
         fetch(LOG_URL, {
           method: 'POST',
@@ -660,7 +687,9 @@
 
     // 상담신청 제출 — 폼 전송이 성공했을 때만 호출하세요 (info: {name, phone})
     window.trackLeadSubmit = function (info) {
-      send(LEAD);
+      info = info || {};
+      info.transactionId = createTransactionId('lead');
+      send(LEAD, info.transactionId);
       gaLog('form', info);
       pushAnalyticsEvent('generate_lead', {
         form_name: (info && info.source) || 'consultation'
@@ -683,8 +712,9 @@
       // 전화: tel: 링크
       if (t.closest('a[href^="tel:"]')) {
         if (throttled('call')) {
-          send(CALL);
-          gaLog('call');
+          var callTransactionId = createTransactionId('call');
+          send(CALL, callTransactionId);
+          gaLog('call', { transactionId: callTransactionId });
           pushAnalyticsEvent('phone_click');
         }
         return;
@@ -693,8 +723,9 @@
       // 카카오: 배너 / 플로팅 TALK / 하단바 / 팝업 등 pf.kakao.com 링크 전부
       if (t.closest('a[href*="pf.kakao.com"]')) {
         if (throttled('kakao')) {
-          send(KAKAO);
-          gaLog('kakao');
+          var kakaoTransactionId = createTransactionId('kakao');
+          send(KAKAO, kakaoTransactionId);
+          gaLog('kakao', { transactionId: kakaoTransactionId });
           pushAnalyticsEvent('kakao_click');
         }
       }
