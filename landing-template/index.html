@@ -600,6 +600,14 @@
     }
     window.isAdsTestMode = isAdsTestMode;
 
+    if (isAdsTestMode()) {
+      var testBanner = document.createElement('div');
+      testBanner.setAttribute('role', 'status');
+      testBanner.textContent = '광고 전환 테스트 모드 — 광고·분석·상담 문자가 전송되지 않습니다.';
+      testBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;padding:10px 16px;background:#fff3cd;color:#664d03;border-bottom:1px solid #ffecb5;text-align:center;font-weight:700;font-size:14px;';
+      document.body.appendChild(testBanner);
+    }
+
     // 전환마다 고유번호를 붙여 중복 집계를 줄이고, 향후 개별 전환 조정에 사용합니다.
     function createTransactionId(type) {
       var randomId = (window.crypto && typeof window.crypto.randomUUID === 'function')
