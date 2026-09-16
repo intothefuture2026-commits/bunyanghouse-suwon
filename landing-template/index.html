@@ -590,6 +590,7 @@
     var CALL  = 'AW-18422804708/Gno5CO_6uewcEOTh1tBE'; // 클릭 투 콜
     var KAKAO = 'AW-18422804708/9k6OCITrjO0cEOTh1tBE'; // 카카오 상담 클릭
     var LOG_URL = 'https://script.google.com/macros/s/AKfycbxWO82ShlWmE2T_6mpgQ6R_9IePF_kI_a8Jz0Era2mswmXWuoSitwWARCWwHiBKdh_X/exec'; // 클릭/상담 로그 시트
+    var LOG_SOURCE = 'google_search';
 
     // URL에 ?ads_test=1을 붙이면 실제 Google Ads 전환은 보내지 않습니다.
     // 운영 중 점검은 이 주소로 열어 테스트 전환이 실적에 섞이지 않게 합니다.
@@ -664,9 +665,7 @@
     }
 
     function getCampaign() {
-      try {
-        return new URLSearchParams(location.search).get('utm_source') || '';
-      } catch (err) { return ''; }
+      return LOG_SOURCE;
     }
 
     // ── 폼 제출 / 전화·카카오 클릭을 구글 시트에 기록 (실제 상담 여부 확인용) ──
